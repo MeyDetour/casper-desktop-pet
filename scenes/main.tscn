@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://b6oh0j7i2ng41"]
+
+[ext_resource type="Texture2D" uid="uid://i64vwv3sdw1r" path="res://sprites/idle.png" id="1_0wfyh"]
+[ext_resource type="Script" uid="uid://dbw0wqoet25p2" path="res://scripts/main.gd" id="1_sugp2"]
+[ext_resource type="Texture2D" uid="uid://bm8e5s73f5a63" path="res://sprites/walk1.png" id="3_yc10j"]
+[ext_resource type="Texture2D" uid="uid://d3l3fybvk0b" path="res://sprites/walk2.png" id="4_jscy8"]
+[ext_resource type="Texture2D" uid="uid://ba466gyf2smrh" path="res://sprites/walk3.png" id="5_pm3ni"]
+[ext_resource type="Texture2D" uid="uid://dhvisw6gjhitj" path="res://sprites/walk4.png" id="6_y6deb"]
+[ext_resource type="Texture2D" uid="uid://lkfhqje1wi3m" path="res://sprites/walk5.png" id="7_og1vs"]
+[ext_resource type="Texture2D" uid="uid://o48x2qmrhvsx" path="res://sprites/walk6.png" id="8_2wyq8"]
+[ext_resource type="Texture2D" uid="uid://dtctxicccfc40" path="res://sprites/walk7.png" id="9_vxglm"]
+[ext_resource type="Texture2D" uid="uid://x3uleexi226a" path="res://sprites/walk8.png" id="10_2f3dj"]
+[ext_resource type="Texture2D" uid="uid://duj7r4rkm1r0" path="res://sprites/walk9.png" id="11_yq6so"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tbgi4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_0wfyh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_yc10j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_jscy8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_pm3ni")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_y6deb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_og1vs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_2wyq8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_vxglm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_2f3dj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_yq6so")
+}],
+"loop": true,
+"name": &"walking right",
+"speed": 6.0
+}]
+
+[node name="Node2D" type="Node2D" unique_id=1731414138]
+script = ExtResource("1_sugp2")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2006757747]
+position = Vector2(286, 203)
+scale = Vector2(0.2, 0.2)
+sprite_frames = SubResource("SpriteFrames_tbgi4")
+animation = &"walking right"
+autoplay = "walking right"
+frame_progress = 0.02891335
