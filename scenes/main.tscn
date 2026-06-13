@@ -2,6 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://i64vwv3sdw1r" path="res://sprites/idle.png" id="1_0wfyh"]
 [ext_resource type="Script" uid="uid://dbw0wqoet25p2" path="res://scripts/main.gd" id="1_sugp2"]
+[ext_resource type="Texture2D" uid="uid://bcgtsphxtdiic" path="res://sprites/when-dragging-1.png" id="2_a8y0u"]
+[ext_resource type="Texture2D" uid="uid://n502f4a1w3kf" path="res://sprites/when-dragging-3.png" id="3_jkv2x"]
 [ext_resource type="Texture2D" uid="uid://bm8e5s73f5a63" path="res://sprites/walk1.png" id="3_yc10j"]
 [ext_resource type="Texture2D" uid="uid://d3l3fybvk0b" path="res://sprites/walk2.png" id="4_jscy8"]
 [ext_resource type="Texture2D" uid="uid://dhvisw6gjhitj" path="res://sprites/walk4.png" id="6_y6deb"]
@@ -10,12 +12,25 @@
 [ext_resource type="Texture2D" uid="uid://dtctxicccfc40" path="res://sprites/walk7.png" id="9_vxglm"]
 [ext_resource type="Texture2D" uid="uid://x3uleexi226a" path="res://sprites/walk8.png" id="10_2f3dj"]
 [ext_resource type="Texture2D" uid="uid://duj7r4rkm1r0" path="res://sprites/walk9.png" id="11_yq6so"]
+[ext_resource type="Texture2D" uid="uid://ch7vr3itjkmba" path="res://sprites/face.png" id="13_jbj1t"]
+[ext_resource type="Texture2D" uid="uid://c8lpguadhrc2a" path="res://sprites/when-dragging-2.png" id="14_muem4"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_choun"]
 load_path = "res://.godot/imported/walk3.png-43c4abc1832ba3002c6ca24681463e5e.ctex"
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tbgi4"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_a8y0u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_jkv2x")
+}],
+"loop": false,
+"name": &"falling",
+"speed": 3.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("1_0wfyh")
@@ -50,6 +65,29 @@ animations = [{
 "loop": true,
 "name": &"walking right",
 "speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_jbj1t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_a8y0u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_muem4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_jkv2x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_muem4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_a8y0u")
+}],
+"loop": true,
+"name": &"when dragging",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ya4ey"]
@@ -65,9 +103,8 @@ position = Vector2(6, 4)
 position = Vector2(280, 199)
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_tbgi4")
-animation = &"walking right"
+animation = &"falling"
 autoplay = "walking right"
-frame_progress = 0.63656205
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=49739100]
 position = Vector2(307.5, 195)
