@@ -13,6 +13,8 @@
 [ext_resource type="Texture2D" uid="uid://x3uleexi226a" path="res://sprites/walk8.png" id="10_2f3dj"]
 [ext_resource type="Texture2D" uid="uid://duj7r4rkm1r0" path="res://sprites/walk9.png" id="11_yq6so"]
 [ext_resource type="Texture2D" uid="uid://ch7vr3itjkmba" path="res://sprites/face.png" id="13_jbj1t"]
+[ext_resource type="Texture2D" uid="uid://b4ebhdrdm6c0r" path="res://sprites/mur.png" id="13_muem4"]
+[ext_resource type="Texture2D" uid="uid://dur64cvgou87u" path="res://sprites/etourdi.png" id="14_dp3eg"]
 [ext_resource type="Texture2D" uid="uid://c8lpguadhrc2a" path="res://sprites/when-dragging-2.png" id="14_muem4"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_choun"]
@@ -68,6 +70,17 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("13_muem4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_dp3eg")
+}],
+"loop": true,
+"name": &"wall",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("13_jbj1t")
 }, {
 "duration": 1.0,
@@ -97,15 +110,19 @@ size = Vector2(139, 192)
 script = ExtResource("1_sugp2")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=1869493719]
-position = Vector2(6, 4)
+position = Vector2(47, 4)
+scale = Vector2(0.5, 0.5)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Area2D" unique_id=2006757747]
-position = Vector2(280, 199)
+position = Vector2(210, 182)
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_tbgi4")
-animation = &"falling"
+animation = &"wall"
 autoplay = "walking right"
+frame_progress = 0.07821475
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=49739100]
-position = Vector2(307.5, 195)
+position = Vector2(214, 178)
 shape = SubResource("RectangleShape2D_ya4ey")
+
+[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
