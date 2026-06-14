@@ -35,6 +35,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("13_jbj1t")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("1_0wfyh")
 }, {
 "duration": 1.0,
@@ -110,19 +118,45 @@ size = Vector2(139, 192)
 script = ExtResource("1_sugp2")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=1869493719]
-position = Vector2(47, 4)
+position = Vector2(43, 119)
 scale = Vector2(0.5, 0.5)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Area2D" unique_id=2006757747]
 position = Vector2(210, 182)
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_tbgi4")
-animation = &"wall"
+animation = &"idle"
 autoplay = "walking right"
-frame_progress = 0.07821475
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=49739100]
 position = Vector2(214, 178)
 shape = SubResource("RectangleShape2D_ya4ey")
+
+[node name="ActionMenu" type="Panel" parent="." unique_id=829042826]
+offset_left = -168.0
+offset_top = -384.0
+offset_right = -168.0
+offset_bottom = -384.0
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ActionMenu" unique_id=589327582]
+layout_mode = 0
+offset_left = 273.0
+offset_top = 456.0
+offset_right = 353.0
+offset_bottom = 522.0
+mouse_filter = 2
+
+[node name="Cacher" type="Button" parent="ActionMenu/VBoxContainer" unique_id=405094574]
+layout_mode = 2
+mouse_filter = 2
+text = "Cacher
+"
+
+[node name="Minijeux" type="Button" parent="ActionMenu/VBoxContainer" unique_id=842550443]
+layout_mode = 2
+mouse_filter = 2
+text = "Mini-jeux
+"
 
 [connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
