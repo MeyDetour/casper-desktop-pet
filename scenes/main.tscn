@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://i64vwv3sdw1r" path="res://sprites/idle.png" id="1_0wfyh"]
 [ext_resource type="Script" uid="uid://dbw0wqoet25p2" path="res://scripts/main.gd" id="1_sugp2"]
+[ext_resource type="Script" uid="uid://3dmpsfhab78g" path="res://scenes/fantome.gd" id="2_0ld40"]
 [ext_resource type="Texture2D" uid="uid://bcgtsphxtdiic" path="res://sprites/when-dragging-1.png" id="2_a8y0u"]
 [ext_resource type="Texture2D" uid="uid://n502f4a1w3kf" path="res://sprites/when-dragging-3.png" id="3_jkv2x"]
 [ext_resource type="Texture2D" uid="uid://bm8e5s73f5a63" path="res://sprites/walk1.png" id="3_yc10j"]
@@ -16,6 +17,9 @@
 [ext_resource type="Texture2D" uid="uid://b4ebhdrdm6c0r" path="res://sprites/mur.png" id="13_muem4"]
 [ext_resource type="Texture2D" uid="uid://dur64cvgou87u" path="res://sprites/etourdi.png" id="14_dp3eg"]
 [ext_resource type="Texture2D" uid="uid://c8lpguadhrc2a" path="res://sprites/when-dragging-2.png" id="14_muem4"]
+[ext_resource type="Texture2D" uid="uid://beuj6k7gw32c8" path="res://sprites/button.png" id="17_muem4"]
+[ext_resource type="Texture2D" uid="uid://m04s210fskw3" path="res://sprites/button-hover.png" id="18_dp3eg"]
+[ext_resource type="Script" uid="uid://ddatst7g7g8uf" path="res://scenes/actionMenu.gd" id="18_gqmmt"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_choun"]
 load_path = "res://.godot/imported/walk3.png-43c4abc1832ba3002c6ca24681463e5e.ctex"
@@ -120,6 +124,7 @@ script = ExtResource("1_sugp2")
 [node name="Area2D" type="Area2D" parent="." unique_id=1869493719]
 position = Vector2(43, 119)
 scale = Vector2(0.5, 0.5)
+script = ExtResource("2_0ld40")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Area2D" unique_id=2006757747]
 position = Vector2(210, 182)
@@ -133,30 +138,52 @@ position = Vector2(214, 178)
 shape = SubResource("RectangleShape2D_ya4ey")
 
 [node name="ActionMenu" type="Panel" parent="." unique_id=829042826]
-offset_left = -168.0
-offset_top = -384.0
-offset_right = -168.0
-offset_bottom = -384.0
+offset_left = -185.0
+offset_top = -378.0
+offset_right = -185.0
+offset_bottom = -378.0
 mouse_filter = 2
+script = ExtResource("18_gqmmt")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ActionMenu" unique_id=589327582]
 layout_mode = 0
 offset_left = 273.0
 offset_top = 456.0
-offset_right = 353.0
-offset_bottom = 522.0
+offset_right = 402.0
+offset_bottom = 543.0
 mouse_filter = 2
+alignment = 1
 
-[node name="Cacher" type="Button" parent="ActionMenu/VBoxContainer" unique_id=405094574]
+[node name="Cacher" type="TextureButton" parent="ActionMenu/VBoxContainer" unique_id=1204921228]
 layout_mode = 2
-mouse_filter = 2
-text = "Cacher
-"
+texture_normal = ExtResource("17_muem4")
+texture_hover = ExtResource("18_dp3eg")
 
-[node name="Minijeux" type="Button" parent="ActionMenu/VBoxContainer" unique_id=842550443]
+[node name="Label" type="Label" parent="ActionMenu/VBoxContainer/Cacher" unique_id=1336680978]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Cacher"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Minijeux" type="TextureButton" parent="ActionMenu/VBoxContainer" unique_id=1931434267]
 layout_mode = 2
-mouse_filter = 2
-text = "Mini-jeux
-"
+texture_normal = ExtResource("17_muem4")
+texture_hover = ExtResource("18_dp3eg")
 
-[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
+[node name="Label" type="Label" parent="ActionMenu/VBoxContainer/Minijeux" unique_id=701751231]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Mini-jeux"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="input_event" from="Area2D" to="Area2D" method="_on_input_event"]
