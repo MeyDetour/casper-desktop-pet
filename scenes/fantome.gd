@@ -1,7 +1,5 @@
 extends Area2D
-
-# On expose des signaux pour que le Main sache quand le joueur clique sur le fantôme
-signal fantome_clique
+ 
 # Dans fantome.gd
 @onready var menu = $"../ActionMenu" # On va chercher le menu qui est son frère dans l'arbre
  
@@ -21,10 +19,12 @@ func _process(delta: float) -> void:
 	var window = get_window() 
 	var usable_rect = DisplayServer.screen_get_usable_rect()
 	var ground_y = usable_rect.end.y - window.size.y + get_parent().fantome_gap_box
-	
+	#print("mode :" +str(get_parent().mode))
+	#print("immbolie :" +str(get_parent().immobilise))
+	#print("dragging :" + str(is_dragging))
 	# CAS 1 : fantome dragger
-	if is_dragging:
-		print("is dragging ")
+	if is_dragging: 
+		print("fantome is dragging")
 		var global_mouse_pos = DisplayServer.mouse_get_position()
 		if get_parent().mode == "free" :
 			window.position = global_mouse_pos - drag_offset
@@ -57,69 +57,62 @@ func _process(delta: float) -> void:
 				$AnimatedSprite2D.flip_v = false
 				flip_to_left()
 				get_window().position.y = y - get_parent().decalage_y_top_a_cause_du_menu - get_parent().decalage_hit_box
-					
-				
-				
-			
-			
+						
 	elif get_parent().immobilise: 
+		
 		#$AnimatedSprite2D.play("idle")
 		return
 	else:
-		# CAS 2 : Fantome en l'air (Chute libre)
-		if window.position.y < ground_y:
-			vertical_velocity += 0.2 * delta * 60 
-			
-			var fall_vector = Vector2i(direction.x * (move_speed * 0.5), vertical_velocity)
-			window.position += fall_vector
-			
-			if window.position.y >= ground_y:
-				print("[CHUTE] Atterrissage au sol détecté ! ground_y = ", ground_y)
-				window.position.y = ground_y
-				vertical_velocity = 0.0
-				$AnimatedSprite2D.play("walking right")
-			else:
-				$AnimatedSprite2D.play("falling")
+		
+		if get_parent().mode =="free" :
+			print("fantome walk")
+			# CAS 2 : Fantome en l'air (Chute libre)
+			if window.position.y < ground_y  :
+				vertical_velocity += 0.2 * delta * 60 
 				
-		# CAS 3 : fantome au sol        
-		else: 
-			if not is_waiting:
-				var move_vector = Vector2i(direction * move_speed)
-				window.position += move_vector
-				$AnimatedSprite2D.play("walking right")
-			 
-			# Détection du mur DROIT
-			if window.position.x + window.size.x - get_parent().fantome_gap_box > usable_rect.end.x:
-				if not is_waiting:
-					print("[MUR DROIT] Choc détecté ! Début de l'attente de 2s.")
-					is_waiting = true
-					$AnimatedSprite2D.play("wall")
-					await get_tree().create_timer(2.0).timeout
-					direction.x = -1
-					$AnimatedSprite2D.flip_h = true
-					is_waiting = false
-					print("[MUR DROIT] Attente terminée. Fait demi-tour vers la GAUCHE.")
+				var fall_vector = Vector2i(direction.x * (move_speed * 0.5), vertical_velocity)
+				window.position += fall_vector
+				
+				if window.position.y >= ground_y:
+					print("[CHUTE] Atterrissage au sol détecté ! ground_y = ", ground_y)
+					window.position.y = ground_y
+					vertical_velocity = 0.0
+					$AnimatedSprite2D.play("walking right")
+				else:
+					$AnimatedSprite2D.play("falling")
 					
-			# Détection du mur GAUCHE
-			elif window.position.x + get_parent().fantome_gap_box < usable_rect.position.x:
+			# CAS 3 : fantome au sol        
+			else: 
 				if not is_waiting:
-					print("[MUR GAUCHE] Choc détecté ! Début de l'attente de 2s.")
-					is_waiting = true
-					$AnimatedSprite2D.play("wall")
-					await get_tree().create_timer(2.0).timeout
-					direction.x = 1
-					$AnimatedSprite2D.flip_h = false
-					is_waiting = false
-					print("[MUR GAUCHE] Attente terminée. Fait demi-tour vers la DROITE.")
+					var move_vector = Vector2i(direction * move_speed)
+					window.position += move_vector
+					$AnimatedSprite2D.play("walking right")
+				 
+				# Détection du mur DROIT
+				if window.position.x + window.size.x - get_parent().fantome_gap_box > usable_rect.end.x:
+					if not is_waiting:
+						print("[MUR DROIT] Choc détecté ! Début de l'attente de 2s.")
+						is_waiting = true
+						$AnimatedSprite2D.play("wall")
+						await get_tree().create_timer(2.0).timeout
+						direction.x = -1
+						$AnimatedSprite2D.flip_h = true
+						is_waiting = false
+						print("[MUR DROIT] Attente terminée. Fait demi-tour vers la GAUCHE.")
+						
+				# Détection du mur GAUCHE
+				elif window.position.x + get_parent().fantome_gap_box < usable_rect.position.x:
+					if not is_waiting:
+						print("[MUR GAUCHE] Choc détecté ! Début de l'attente de 2s.")
+						is_waiting = true
+						$AnimatedSprite2D.play("wall")
+						await get_tree().create_timer(2.0).timeout
+						direction.x = 1
+						$AnimatedSprite2D.flip_h = false
+						is_waiting = false
+						print("[MUR GAUCHE] Attente terminée. Fait demi-tour vers la DROITE.")
 
-func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			print("[CLIC] Bouton de souris enfoncé sur la CollisionShape.")
-			is_dragging = true
-			drag_offset = DisplayServer.mouse_get_position() - get_window().position
-			click_position_start = DisplayServer.mouse_get_position()
-			
+ 
 func retourner_horizontalement() -> void:
 	$AnimatedSprite2D.flip_h = true 
 func flip_to_right() -> void:
@@ -143,21 +136,40 @@ func est_a_droite() -> bool:
 func rotation(angle:int)->void :
 		$AnimatedSprite2D.rotation_degrees = angle
 func gerer_clic_simple() -> void:
+	print("click simple")
+	if get_parent().mode =="hide":
+		return
 	menu.visible = not menu.visible
+	get_parent().immobilise = menu.visible
 	if menu.visible : 
 		$AnimatedSprite2D.play('idle')
 	else :
 		$AnimatedSprite2D.play("walking right")
-	get_parent().immobilise = menu.visible
+	print ("click simple executed")
+func change_dragging(choice:bool):
+	is_dragging = choice
 	
 func to_hide_mode() -> void:
-	print("[CLIC] Fantome play hide.")
 	$AnimatedSprite2D.play("hide")
+	print("fantome hide !")
 	
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	var window = get_window()
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+	
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.double_click:
+		if get_parent().mode =="hide":
+			get_parent().mode = "free"
+			get_parent().immobilise = false
+		return
+	if  event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		print("[CLIC] Bouton de souris enfoncé sur la CollisionShape.")
+		is_dragging = true
+		# permet de garder le fantome sous la souris
+		drag_offset = DisplayServer.mouse_get_position() - get_window().position
+		click_position_start = DisplayServer.mouse_get_position()
+		return
+	
+	if event is InputEventMouseButton and  event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			if is_dragging:
 				
 				# faire tomber le fantome
@@ -167,16 +179,17 @@ func _input(event: InputEvent) -> void:
 				
 				is_dragging = false
 				
-				if distance_parcourue < 5:
+				if distance_parcourue < 5 :
+					
 					print("[SOURIS] Distance très courte (< 5px) -> Traité comme un clic statique.")
-					fantome_clique.emit()
+					if get_parent().mode=="free" :
+						print('clic simple sur le fantome !')
+						gerer_clic_simple()
 					# On prévient le Main qu'on a cliqué !
 					
 				else:
-					
-					if get_parent().mode == "free" :
-						get_parent().immobilise = false 
-					elif get_parent().mode =="hide" and window.position.y <= 0: 
+					 
+					if get_parent().mode =="hide" and window.position.y <= 0: 
 						$AnimatedSprite2D.play("hide-top-screen")
 					elif get_parent().mode =="hide" : 
 						$AnimatedSprite2D.play("hide")
