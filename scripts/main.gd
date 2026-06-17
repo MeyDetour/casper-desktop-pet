@@ -7,9 +7,10 @@ var compteur_clics = 0
 var immobilise: bool = false
 var mode:String = "free"
 
-var decalage_y_a_cause_de_la_box_de_casper = 0
-var decalage_X_a_cause_de_la_box_de_casper = 55
-var decalage_X_en_mode_fantome = 80
+var decalage_y_top_a_cause_du_menu = 165
+var decalage_hit_box = 50
+var fantome_gap_box = 40
+ 
 func _ready() -> void:
 	print("--- INITIALISATION DE LA FENÊTRE ---")
 	var window = get_window()
@@ -22,7 +23,7 @@ func _ready() -> void:
 	menu.hide()
 	
 	var usable_rect = DisplayServer.screen_get_usable_rect()
-	var target_y = usable_rect.end.y - window.size.y + decalage_y_a_cause_de_la_box_de_casper
+	var target_y = usable_rect.end.y - window.size.y + fantome_gap_box
 	window.position = Vector2i(0, target_y)
 	print("Fenêtre configurée. Position initiale au sol : ", window.position)
 	 

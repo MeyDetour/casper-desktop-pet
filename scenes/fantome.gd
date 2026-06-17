@@ -12,6 +12,7 @@ var drag_offset = Vector2i()
    
 var vertical_velocity = 0.0 
 
+var usable_rect = DisplayServer.screen_get_usable_rect()
 var is_waiting = false
 var click_position_start = Vector2()
 
@@ -19,15 +20,48 @@ var click_position_start = Vector2()
 func _process(delta: float) -> void:
 	var window = get_window() 
 	var usable_rect = DisplayServer.screen_get_usable_rect()
-	var ground_y = usable_rect.end.y - window.size.y + get_parent().decalage_y_a_cause_de_la_box_de_casper
+	var ground_y = usable_rect.end.y - window.size.y + get_parent().fantome_gap_box
 	
 	# CAS 1 : fantome dragger
 	if is_dragging:
 		print("is dragging ")
 		var global_mouse_pos = DisplayServer.mouse_get_position()
-		window.position = global_mouse_pos - drag_offset
-		vertical_velocity = 0.0 
-		$AnimatedSprite2D.play("when dragging")
+		if get_parent().mode == "free" :
+			window.position = global_mouse_pos - drag_offset
+			vertical_velocity = 0.0 
+			$AnimatedSprite2D.play("when dragging")
+		elif get_parent().mode == "hide" : 
+			var y = global_mouse_pos[1]  
+			var x = global_mouse_pos[0] 
+			print ("x :"+str( x))
+			print ("y :"+str(y))
+			print(usable_rect.end.y )
+			# si la souris est en haut
+			if  y < (usable_rect.end.y /5 ) :
+				setToTopScreen()
+				get_window().position.x = x - get_parent().fantome_gap_box - get_parent().decalage_hit_box
+				$AnimatedSprite2D.play("hide-top-screen-mooving")
+				
+			# souris à gauche
+			elif   x < usable_rect.end.x /2    :
+				setToLeft()  
+				rotation(0)
+				$AnimatedSprite2D.play('hide-mooving')
+				$AnimatedSprite2D.flip_v = false
+				flip_to_right()
+				get_window().position.y = y - get_parent().decalage_y_top_a_cause_du_menu - get_parent().decalage_hit_box
+			elif usable_rect.end.x /2  < x  :
+				setToRight() 
+				rotation(0) 
+				$AnimatedSprite2D.play('hide-mooving')
+				$AnimatedSprite2D.flip_v = false
+				flip_to_left()
+				get_window().position.y = y - get_parent().decalage_y_top_a_cause_du_menu - get_parent().decalage_hit_box
+					
+				
+				
+			
+			
 	elif get_parent().immobilise: 
 		#$AnimatedSprite2D.play("idle")
 		return
@@ -55,7 +89,7 @@ func _process(delta: float) -> void:
 				$AnimatedSprite2D.play("walking right")
 			 
 			# Détection du mur DROIT
-			if window.position.x + window.size.x - get_parent().decalage_X_a_cause_de_la_box_de_casper > usable_rect.end.x:
+			if window.position.x + window.size.x - get_parent().fantome_gap_box > usable_rect.end.x:
 				if not is_waiting:
 					print("[MUR DROIT] Choc détecté ! Début de l'attente de 2s.")
 					is_waiting = true
@@ -67,7 +101,7 @@ func _process(delta: float) -> void:
 					print("[MUR DROIT] Attente terminée. Fait demi-tour vers la GAUCHE.")
 					
 			# Détection du mur GAUCHE
-			elif window.position.x + get_parent().decalage_X_a_cause_de_la_box_de_casper < usable_rect.position.x:
+			elif window.position.x + get_parent().fantome_gap_box < usable_rect.position.x:
 				if not is_waiting:
 					print("[MUR GAUCHE] Choc détecté ! Début de l'attente de 2s.")
 					is_waiting = true
@@ -87,8 +121,27 @@ func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 			click_position_start = DisplayServer.mouse_get_position()
 			
 func retourner_horizontalement() -> void:
-	$AnimatedSprite2D.flip_h = true  
-	
+	$AnimatedSprite2D.flip_h = true 
+func flip_to_right() -> void:
+	$AnimatedSprite2D.flip_h = false 
+func flip_to_left() -> void:
+	$AnimatedSprite2D.flip_h = true 
+func setToLeft() -> void :
+	get_window().position.x = 0 - get_parent().fantome_gap_box
+func setToRight() -> void :
+	get_window().position.x = usable_rect.end.x - get_window().size.x + get_parent().fantome_gap_box	
+func setToTopScreen() -> void : 
+	get_window().position.y = 0 - get_parent().decalage_y_top_a_cause_du_menu
+func setToBottomScreen() -> void : 
+	get_window().position.y = 0 - get_parent().fantome_gap_box
+func headAtBottom() -> void : 
+	return
+func est_a_gauche() -> bool:
+	return not  $AnimatedSprite2D.flip_h
+func est_a_droite() -> bool:
+	return  $AnimatedSprite2D.flip_h
+func rotation(angle:int)->void :
+		$AnimatedSprite2D.rotation_degrees = angle
 func gerer_clic_simple() -> void:
 	menu.visible = not menu.visible
 	if menu.visible : 
@@ -102,19 +155,29 @@ func to_hide_mode() -> void:
 	$AnimatedSprite2D.play("hide")
 	
 func _input(event: InputEvent) -> void:
+	var window = get_window()
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			if is_dragging:
 				
-				# faire tomber le fantoe
+				# faire tomber le fantome
 				var current_mouse_pos = DisplayServer.mouse_get_position()
 				var distance_parcourue = click_position_start.distance_to(current_mouse_pos)
 				print("[SOURIS] Bouton relâché. Distance parcourue pendant le clic = ", distance_parcourue, " pixels.")
-				is_dragging = false 
-				if get_parent().mode == "free" :
-					get_parent().immobilise = false
+				
+				is_dragging = false
+				
 				if distance_parcourue < 5:
 					print("[SOURIS] Distance très courte (< 5px) -> Traité comme un clic statique.")
-					fantome_clique.emit() # On prévient le Main qu'on a cliqué !
+					fantome_clique.emit()
+					# On prévient le Main qu'on a cliqué !
+					
 				else:
+					
+					if get_parent().mode == "free" :
+						get_parent().immobilise = false 
+					elif get_parent().mode =="hide" and window.position.y <= 0: 
+						$AnimatedSprite2D.play("hide-top-screen")
+					elif get_parent().mode =="hide" : 
+						$AnimatedSprite2D.play("hide")
 					print("[SOURIS] Le fantôme a été lâché après un glissement (Drag & Drop). Il commence à tomber.")

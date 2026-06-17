@@ -21,12 +21,18 @@ func _on_Cacher_pressed() -> void:
 	var window = get_window()
 	var rng = RandomNumberGenerator.new()
 	var my_random_number = rng.randf_range(0.0,1.0)
+	print(my_random_number)
+		 
 	if my_random_number > 0.5 :
-		window.position.x = 0 - get_parent().decalage_X_en_mode_fantome
+		fantome.setToLeft() 
+		fantome.flip_to_right()
+		fantome.rotation(0)
 	else :
-		window.position.x = usable_rect.end.x - window.size.x - get_parent().decalage_X_en_mode_fantome	
-		fantome.retourner_horizontalement()
-	window.position.y = usable_rect.end.y * my_random_number
+		fantome.setToRight()
+		fantome.rotation(0) 
+		fantome.flip_to_left()
+	window.position.y =( usable_rect.end.y * my_random_number) - get_parent().decalage_y_top_a_cause_du_menu
+	get_parent().mode="hide"
 	fantome.to_hide_mode()
 	menu_visibilite_change.emit(true)
 
