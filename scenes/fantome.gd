@@ -164,7 +164,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		if get_parent().mode =="hide":
 			get_parent().mode = "free"
 			get_parent().immobilise = false
+			
+		if get_parent().mode=="free" or get_parent().mode=="note"  :
+			print('clic simple sur le fantome !')
+			gerer_clic_simple()
+			
 		return
+		
 	if  event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		print("[CLIC] Bouton de souris enfoncé sur la CollisionShape.")
 		is_dragging = true
@@ -183,15 +189,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				
 				is_dragging = false
 				
-				if distance_parcourue < 5 :
+				if distance_parcourue > 5 :
 					
-					print("[SOURIS] Distance très courte (< 5px) -> Traité comme un clic statique.")
-					if get_parent().mode=="free" or get_parent().mode=="note"  :
-						print('clic simple sur le fantome !')
-						gerer_clic_simple()
-					# On prévient le Main qu'on a cliqué !
-					
-				else:
 					 
 					if get_parent().mode =="hide" and window.position.y <= 0: 
 						$AnimatedSprite2D.play("hide-top-screen")
