@@ -3,6 +3,7 @@ extends Area2D
 # Dans fantome.gd
 @onready var menu = $"../ActionMenu" 
 @onready var notes = %InterfaceNotes
+@onready var timer_sommeil = %TimerSommeil
 var move_speed = 2
 var direction = Vector2(1,0)
 var is_dragging = false
@@ -13,8 +14,9 @@ var vertical_velocity = 0.0
 var usable_rect = DisplayServer.screen_get_usable_rect()
 var is_waiting = false
 var click_position_start = Vector2()
-
-
+var est_endormi = false
+func _ready() -> void:
+	timer_sommeil.timeout.connect(_on_timer_sommeil_timeout)
 func _process(delta: float) -> void:
 	var window = get_window() 
 	var usable_rect = DisplayServer.screen_get_usable_rect()
@@ -61,9 +63,13 @@ func _process(delta: float) -> void:
 		
 		#$AnimatedSprite2D.play("idle")
 		return
+	elif est_endormi:
+		get_parent().immobilise =  true
+		$AnimatedSprite2D.play("sleeping") # /!\ Crée une animation "sleeping" ou "idle" adaptée
+		return
 	else:
-		
 		if get_parent().mode =="free" : 
+		
 			# CAS 2 : Fantome en l'air (Chute libre)
 			if window.position.y < ground_y  :
 				vertical_velocity += 0.2 * delta * 60 
@@ -109,8 +115,20 @@ func _process(delta: float) -> void:
 						$AnimatedSprite2D.flip_h = false
 						is_waiting = false
 						print("[MUR GAUCHE] Attente terminée. Fait demi-tour vers la DROITE.")
-
- 
+	
+func _on_timer_sommeil_timeout() -> void:
+	if get_parent().mode == "free" and not is_dragging:
+		est_endormi = true
+		print("[SOMMEIL] Le fantôme s'est endormi de fatigue zZZz")
+		
+# Fonction utilitaire pour réveiller le fantôme dès qu'on interagit
+func reveiller_fantome() -> void:
+	if est_endormi:
+		est_endormi = false
+		print("[SOMMEIL] Le fantôme se réveille !")
+	# On relance le compte à rebours de 5 minutes depuis le début
+	timer_sommeil.start()
+	
 func retourner_horizontalement() -> void:
 	$AnimatedSprite2D.flip_h = true 
 func flip_to_right() -> void:
@@ -135,6 +153,7 @@ func rotation(angle:int)->void :
 		$AnimatedSprite2D.rotation_degrees = angle
 func gerer_clic_simple() -> void:
 	print("click simple")
+	reveiller_fantome()
 	if get_parent().mode =="hide":
 		return
 	if get_parent().mode=="note":
