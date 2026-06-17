@@ -2,6 +2,7 @@ extends Node2D
 
 @onready var fantome = $Area2D
 @onready var menu = $ActionMenu
+@onready var notes = $InterfaceNotes
  
 var compteur_clics = 0
 var immobilise: bool = false
@@ -21,6 +22,7 @@ func _ready() -> void:
 	window.always_on_top = true
 	window.unresizable = false
 	menu.hide()
+	notes.hide()
 	
 	var usable_rect = DisplayServer.screen_get_usable_rect()
 	var target_y = usable_rect.end.y - window.size.y + fantome_gap_box

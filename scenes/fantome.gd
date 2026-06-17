@@ -1,8 +1,8 @@
 extends Area2D
  
 # Dans fantome.gd
-@onready var menu = $"../ActionMenu" # On va chercher le menu qui est son frère dans l'arbre
- 
+@onready var menu = $"../ActionMenu" 
+@onready var notes = %InterfaceNotes
 var move_speed = 2
 var direction = Vector2(1,0)
 var is_dragging = false
@@ -23,8 +23,7 @@ func _process(delta: float) -> void:
 	#print("immbolie :" +str(get_parent().immobilise))
 	#print("dragging :" + str(is_dragging))
 	# CAS 1 : fantome dragger
-	if is_dragging: 
-		print("fantome is dragging")
+	if is_dragging:  
 		var global_mouse_pos = DisplayServer.mouse_get_position()
 		if get_parent().mode == "free" :
 			window.position = global_mouse_pos - drag_offset
@@ -64,8 +63,7 @@ func _process(delta: float) -> void:
 		return
 	else:
 		
-		if get_parent().mode =="free" :
-			print("fantome walk")
+		if get_parent().mode =="free" : 
 			# CAS 2 : Fantome en l'air (Chute libre)
 			if window.position.y < ground_y  :
 				vertical_velocity += 0.2 * delta * 60 
@@ -139,6 +137,12 @@ func gerer_clic_simple() -> void:
 	print("click simple")
 	if get_parent().mode =="hide":
 		return
+	if get_parent().mode=="note":
+		notes.hide()
+		get_parent().mode = "free"
+		get_parent().immobilise =false
+		return
+		
 	menu.visible = not menu.visible
 	get_parent().immobilise = menu.visible
 	if menu.visible : 
@@ -182,7 +186,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				if distance_parcourue < 5 :
 					
 					print("[SOURIS] Distance très courte (< 5px) -> Traité comme un clic statique.")
-					if get_parent().mode=="free" :
+					if get_parent().mode=="free" or get_parent().mode=="note"  :
 						print('clic simple sur le fantome !')
 						gerer_clic_simple()
 					# On prévient le Main qu'on a cliqué !

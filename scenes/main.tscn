@@ -26,6 +26,7 @@
 [ext_resource type="Texture2D" uid="uid://di44gp8ia4eeo" path="res://sprites/face-hand-up.png" id="19_kmb1v"]
 [ext_resource type="Texture2D" uid="uid://dkplvcccni5d5" path="res://sprites/face-hand-up-right.png" id="20_fuf3a"]
 [ext_resource type="Texture2D" uid="uid://t4a3l3f156u0" path="res://sprites/face-hand-up-left.png" id="21_pibwh"]
+[ext_resource type="Script" uid="uid://dhto4cl4x70vo" path="res://scenes/interface_notes.gd" id="27_vxglm"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tbgi4"]
 animations = [{
@@ -189,7 +190,7 @@ script = ExtResource("2_0ld40")
 position = Vector2(210, 182)
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_tbgi4")
-animation = &"hide-top-screen-mooving"
+animation = &"hide"
 autoplay = "walking right"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=49739100]
@@ -229,19 +230,128 @@ text = "Cacher"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Minijeux" type="TextureButton" parent="ActionMenu/VBoxContainer" unique_id=1931434267]
+[node name="Notes" type="TextureButton" parent="ActionMenu/VBoxContainer" unique_id=1931434267]
 layout_mode = 2
 texture_normal = ExtResource("17_muem4")
 texture_hover = ExtResource("18_dp3eg")
 
-[node name="Label" type="Label" parent="ActionMenu/VBoxContainer/Minijeux" unique_id=701751231]
+[node name="Label" type="Label" parent="ActionMenu/VBoxContainer/Notes" unique_id=701751231]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Mini-jeux"
+text = "Notes"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InterfaceNotes" type="Control" parent="." unique_id=1324556754]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 22.999996
+offset_top = 58.999996
+offset_right = 62.999996
+offset_bottom = 99.0
+scale = Vector2(0.7, 0.7)
+script = ExtResource("27_vxglm")
+
+[node name="ColorRect2" type="ColorRect" parent="InterfaceNotes" unique_id=944898110]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -32.85714
+offset_top = -84.285706
+offset_right = 222.85712
+offset_bottom = 104.285706
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="InterfaceNotes" unique_id=1644011289]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.142855
+offset_top = -68.57141
+offset_right = 205.85715
+offset_bottom = 81.42859
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="InterfaceNotes/VBoxContainer" unique_id=621182492]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 2
+text = "Mes notes"
+
+[node name="ListNotes" type="ItemList" parent="InterfaceNotes/VBoxContainer" unique_id=533045112]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(12.623979, 12.623979, 12.623979, 1)
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 23
+theme_override_constants/outline_size = 0
+theme_override_constants/line_separation = 2
+theme_override_constants/icon_margin = 4
+same_column_width = true
+
+[node name="TextEdit" type="TextEdit" parent="InterfaceNotes/VBoxContainer" unique_id=1670006076]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+wrap_mode = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="InterfaceNotes/VBoxContainer" unique_id=230199417]
+layout_mode = 2
+
+[node name="BoutonSauvegarder" type="TextureButton" parent="InterfaceNotes/VBoxContainer/HBoxContainer" unique_id=1281935493]
+layout_mode = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("17_muem4")
+
+[node name="Label" type="Label" parent="InterfaceNotes/VBoxContainer/HBoxContainer/BoutonSauvegarder" unique_id=1616097636]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Sauvegarder"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoutonNouveau" type="TextureButton" parent="InterfaceNotes/VBoxContainer/HBoxContainer" unique_id=565251469]
+layout_mode = 2
+texture_normal = ExtResource("17_muem4")
+
+[node name="Label" type="Label" parent="InterfaceNotes/VBoxContainer/HBoxContainer/BoutonNouveau" unique_id=2138861554]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Nouveau"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoutonAnnuler" type="TextureButton" parent="InterfaceNotes/VBoxContainer/HBoxContainer" unique_id=1116150293]
+layout_mode = 2
+texture_normal = ExtResource("17_muem4")
+
+[node name="Label" type="Label" parent="InterfaceNotes/VBoxContainer/HBoxContainer/BoutonAnnuler" unique_id=1952107001]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Annuler"
 horizontal_alignment = 1
 vertical_alignment = 1
 
