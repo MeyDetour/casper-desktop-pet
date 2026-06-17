@@ -5,10 +5,11 @@ extends Node2D
  
 var compteur_clics = 0
 var immobilise: bool = false
+var mode:String = "free"
 
 var decalage_y_a_cause_de_la_box_de_casper = 0
-var decalage_X_a_cause_de_la_box_de_casper = 100 
-
+var decalage_X_a_cause_de_la_box_de_casper = 55
+var decalage_X_en_mode_fantome = 80
 func _ready() -> void:
 	print("--- INITIALISATION DE LA FENÊTRE ---")
 	var window = get_window()
@@ -29,6 +30,6 @@ func _ready() -> void:
 	fantome.fantome_clique.connect(menu.basculer_menu)	
 	
 	# Quand le menu change d'état, on fige ou libère le fantôme
-	menu.menu_visibilite_change.connect(func(est_visible): fantome.immobilise = est_visible)
+	menu.menu_visibilite_change.connect(func(est_visible): immobilise = est_visible)
 	
 	

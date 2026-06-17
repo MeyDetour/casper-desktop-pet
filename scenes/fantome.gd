@@ -4,7 +4,7 @@ extends Area2D
 signal fantome_clique
 # Dans fantome.gd
 @onready var menu = $"../ActionMenu" # On va chercher le menu qui est son frère dans l'arbre
-
+ 
 var move_speed = 2
 var direction = Vector2(1,0)
 var is_dragging = false
@@ -23,13 +23,14 @@ func _process(delta: float) -> void:
 	
 	# CAS 1 : fantome dragger
 	if is_dragging:
+		print("is dragging ")
 		var global_mouse_pos = DisplayServer.mouse_get_position()
 		window.position = global_mouse_pos - drag_offset
 		vertical_velocity = 0.0 
 		$AnimatedSprite2D.play("when dragging")
 	elif get_parent().immobilise: 
-		$AnimatedSprite2D.play("idle")
-			
+		#$AnimatedSprite2D.play("idle")
+		return
 	else:
 		# CAS 2 : Fantome en l'air (Chute libre)
 		if window.position.y < ground_y:
@@ -84,21 +85,34 @@ func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 			is_dragging = true
 			drag_offset = DisplayServer.mouse_get_position() - get_window().position
 			click_position_start = DisplayServer.mouse_get_position()
-
+			
+func retourner_horizontalement() -> void:
+	$AnimatedSprite2D.flip_h = true  
+	
 func gerer_clic_simple() -> void:
 	menu.visible = not menu.visible
+	if menu.visible : 
+		$AnimatedSprite2D.play('idle')
+	else :
+		$AnimatedSprite2D.play("walking right")
 	get_parent().immobilise = menu.visible
+	
+func to_hide_mode() -> void:
+	print("[CLIC] Fantome play hide.")
+	$AnimatedSprite2D.play("hide")
 	
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			if is_dragging:
+				
+				# faire tomber le fantoe
 				var current_mouse_pos = DisplayServer.mouse_get_position()
 				var distance_parcourue = click_position_start.distance_to(current_mouse_pos)
-				
 				print("[SOURIS] Bouton relâché. Distance parcourue pendant le clic = ", distance_parcourue, " pixels.")
 				is_dragging = false 
-				
+				if get_parent().mode == "free" :
+					get_parent().immobilise = false
 				if distance_parcourue < 5:
 					print("[SOURIS] Distance très courte (< 5px) -> Traité comme un clic statique.")
 					fantome_clique.emit() # On prévient le Main qu'on a cliqué !
