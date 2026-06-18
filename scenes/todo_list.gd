@@ -1,11 +1,11 @@
 extends Control
 
-@onready var liste_notes = $VBoxContainer/ListNotes
+@onready var liste_todo = $VBoxContainer/ListTodo
 @onready var zone_texte = $VBoxContainer/TextEdit
 
-const DOSSIER_NOTES = "user://notes/"
+const DOSSIER_NOTES = "user://todo/"
 # Cette variable va stocker le nom du fichier .txt actuellement ouvert
-var note_actuelle_nom = ""
+var todo_nom = ""
 
 func _ready() -> void:
 	if not DirAccess.dir_exists_absolute(DOSSIER_NOTES):
@@ -13,21 +13,22 @@ func _ready() -> void:
 		
 	$VBoxContainer/HBoxContainer/BoutonSauvegarder.pressed.connect(sauvegarder_note_actuelle)
 	$VBoxContainer/HBoxContainer/BoutonNouveau.pressed.connect(creer_nouvelle_note)
-	$VBoxContainer/HBoxContainer/BoutonAnnuler.pressed.connect(annuler)
+	$VBoxContainer/HBoxContainer/BoutonSupp.pressed.connect(supprimer)
 	
 	# /!\ IMPORTANT : On connecte le clic sur la liste pour charger la note
-	liste_notes.item_selected.connect(_on_note_selectionnee)
+	liste_todo.item_selected.connect(_on_note_selectionnee)
 	
 	rafraichir_liste_de_notes()
 
 # 1. Liste des notes (Ta version corrigée, qui est au top !)
 func rafraichir_liste_de_notes() -> void:
-	liste_notes.clear()
+	liste_todo.clear()
 	show()
 	$VBoxContainer/TextEdit.hide()
-	$VBoxContainer/HBoxContainer/BoutonAnnuler.hide()
-	$VBoxContainer/HBoxContainer/BoutonSauvegarder.hide()
 	$VBoxContainer/HBoxContainer/BoutonNouveau.show()
+	$VBoxContainer/HBoxContainer/BoutonSupp.hide()
+	$VBoxContainer/HBoxContainer/BoutonSauvegarder.hide()
+	
 	var dir = DirAccess.open(DOSSIER_NOTES)
 	if dir:
 		dir.list_dir_begin()
@@ -46,9 +47,9 @@ func rafraichir_liste_de_notes() -> void:
 						contenu = contenu.left(50) + "..."
 					
 					# On ajoute l'item dans la liste
-					var index = liste_notes.add_item(contenu)
+					var index = liste_todo.add_item(contenu)
 					# ASTUCE : On cache le vrai nom du fichier dans l'item pour pouvoir le retrouver après
-					liste_notes.set_item_metadata(index, file_name)
+					liste_todo.set_item_metadata(index, file_name)
 					
 					fichier.close()
 					
@@ -58,16 +59,16 @@ func rafraichir_liste_de_notes() -> void:
 # 2. Charger une note quand on clique dessus dans la liste
 func _on_note_selectionnee(index: int) -> void:
 	# On récupère le vrai nom du fichier qu'on avait caché dans les métadonnées
-	note_actuelle_nom = liste_notes.get_item_metadata(index)
+	todo_nom = liste_todo.get_item_metadata(index)
 	
-	var fichier = FileAccess.open(DOSSIER_NOTES + note_actuelle_nom, FileAccess.READ)
+	var fichier = FileAccess.open(DOSSIER_NOTES + todo_nom, FileAccess.READ)
 	if fichier:
 		
 		$VBoxContainer/HBoxContainer/BoutonSauvegarder.show()
-		$VBoxContainer/HBoxContainer/BoutonAnnuler.show()
+		$VBoxContainer/HBoxContainer/BoutonSupp.show()
 		$VBoxContainer/HBoxContainer/BoutonNouveau.hide()
 		$VBoxContainer/TextEdit.show()
-		$VBoxContainer/ListNotes.hide()
+		$VBoxContainer/ListTodo.hide()
 		zone_texte.text = fichier.get_as_text()
 		fichier.close()
 
@@ -78,37 +79,43 @@ func sauvegarder_note_actuelle() -> void:
 		return
 
 	# Si c'est une NOUVELLE note (pas encore de nom), on lui génère son nom unique
-	if note_actuelle_nom == "":
-		note_actuelle_nom = "Note_" + str(Time.get_unix_time_from_system()) + ".txt"
+	if todo_nom == "":
+		todo_nom = "Todo_" + str(Time.get_unix_time_from_system()) + ".txt"
 		
-	var fichier = FileAccess.open(DOSSIER_NOTES + note_actuelle_nom, FileAccess.WRITE)
+	var fichier = FileAccess.open(DOSSIER_NOTES + todo_nom, FileAccess.WRITE)
 	if fichier:
 		fichier.store_string(zone_texte.text)
 		fichier.close()
-		print("Sauvegardé avec succès : ", note_actuelle_nom)
+		print("Sauvegardé avec succès : ", todo_nom)
 		
 		$VBoxContainer/HBoxContainer/BoutonSauvegarder.hide()
-		$VBoxContainer/HBoxContainer/BoutonAnnuler.hide()
+		$VBoxContainer/HBoxContainer/BoutonSupp.hide()
 		$VBoxContainer/HBoxContainer/BoutonNouveau.hide()
 		$VBoxContainer/TextEdit.hide()
-		$VBoxContainer/ListNotes.show()
+		$VBoxContainer/ListTodo.show()
 		rafraichir_liste_de_notes()
 
 # 4. Bouton "Nouveau"
 func creer_nouvelle_note() -> void:
 	zone_texte.text = "" 
-	liste_notes.deselect_all()
+	liste_todo.deselect_all()
 	$VBoxContainer/HBoxContainer/BoutonSauvegarder.show()
-	$VBoxContainer/HBoxContainer/BoutonAnnuler.show()
+	$VBoxContainer/HBoxContainer/BoutonSupp.show()
 	$VBoxContainer/TextEdit.show()
 	$VBoxContainer/HBoxContainer/BoutonNouveau.hide()
-	$VBoxContainer/ListNotes.hide()
+	$VBoxContainer/ListTodo.hide()
 	
-func annuler() -> void:
-	$VBoxContainer/HBoxContainer/BoutonSauvegarder.hide()
-	$VBoxContainer/HBoxContainer/BoutonAnnuler.hide()
-	$VBoxContainer/TextEdit.hide()
-	$VBoxContainer/ListNotes.show()
-	zone_texte.text = "" 
-	liste_notes.deselect_all()
-	$VBoxContainer/HBoxContainer/BoutonNouveau.show()
+ 
+func supprimer() -> void:  
+	var chemin_complet = DOSSIER_NOTES + todo_nom 
+	if FileAccess.file_exists(chemin_complet):
+		var erreur = DirAccess.remove_absolute(chemin_complet)
+		if erreur == OK:
+			print("Note supprimée avec succès : ", todo_nom)
+		else:
+			print("Erreur lors de la suppression du fichier : ", erreur)
+			 
+	todo_nom = "" 
+	zone_texte.text = ""
+	$VBoxContainer/ListTodo.show()
+	rafraichir_liste_de_notes()

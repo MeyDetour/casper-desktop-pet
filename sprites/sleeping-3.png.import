@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctcommoejce3n"
-path="res://.godot/imported/sleeping.png-6c24f84caa85a31c7425d952912d76eb.ctex"
+uid="uid://c4whivc22k7c7"
+path="res://.godot/imported/sleeping-3.png-8b398d7601e30d235d4f36c172372cf8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/sleeping.png"
-dest_files=["res://.godot/imported/sleeping.png-6c24f84caa85a31c7425d952912d76eb.ctex"]
+source_file="res://sprites/sleeping-3.png"
+dest_files=["res://.godot/imported/sleeping-3.png-8b398d7601e30d235d4f36c172372cf8.ctex"]
 
 [params]
 

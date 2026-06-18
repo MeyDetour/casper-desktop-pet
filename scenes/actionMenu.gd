@@ -4,13 +4,15 @@ extends Control # Ou Panel, VBoxContainer selon le type de ton ActionMenu
  
 @onready var fantome = %Area2D
 @onready var notes = %InterfaceNotes
+@onready var todo = %TodoList
 func _ready() -> void:
 	# Le menu se connecte directement à ses propres boutons enfants
 	$VBoxContainer/Cacher.pressed.connect(_on_Cacher_pressed)
 	$VBoxContainer/Notes.pressed.connect(_on_Notes_pressed)
+	$VBoxContainer/Todo.pressed.connect(_on_Todo_pressed)
  
 func stop_fantome() : 
-	get_viewport().set_input_as_handled()
+	#get_viewport().set_input_as_handled()
 	fantome.change_dragging(false)
 	hide()
 
@@ -47,3 +49,13 @@ func _on_Notes_pressed() -> void:
 	
 	get_parent().mode="note"
 	notes.rafraichir_liste_de_notes()
+	
+
+
+func _on_Todo_pressed() -> void:
+	print("[ACTION] Bouton 'Notes' pressé !")
+	stop_fantome()
+	get_parent().immobilise = true
+	
+	get_parent().mode="todo"
+	todo.rafraichir_liste_de_notes()

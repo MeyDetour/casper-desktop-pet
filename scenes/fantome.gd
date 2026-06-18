@@ -3,6 +3,7 @@ extends Area2D
 # Dans fantome.gd
 @onready var menu = $"../ActionMenu" 
 @onready var notes = %InterfaceNotes
+@onready var todo = %TodoList
 @onready var timer_sommeil = %TimerSommeil
 var move_speed = 2
 var direction = Vector2(1,0)
@@ -24,7 +25,7 @@ func _process(delta: float) -> void:
 	#print("mode :" +str(get_parent().mode))
 	#print("immbolie :" +str(get_parent().immobilise))
 	#print("dragging :" + str(is_dragging))
-	# CAS 1 : fantome dragger
+	# CAS 1 : fantome dragger 
 	if is_dragging:  
 		var global_mouse_pos = DisplayServer.mouse_get_position()
 		 
@@ -37,9 +38,7 @@ func _process(delta: float) -> void:
 		elif get_parent().mode == "hide" : 
 			var y = global_mouse_pos[1]  
 			var x = global_mouse_pos[0] 
-			print ("x :"+str( x))
-			print ("y :"+str(y))
-			print(usable_rect.end.y )
+			 
 			# si la souris est en haut
 			if  y < (usable_rect.end.y /5 ) :
 				setToTopScreen()
@@ -132,17 +131,18 @@ func _on_timer_sommeil_timeout() -> void:
 			est_en_train_de_somnoler = false
 			est_endormi = true
 			get_parent().immobilise = true 
-			$AnimatedSprite2D.play('sleeping')
+			$AnimatedSprite2D.play('gall-sleeping')
 			print("[SOMMEIL] Le fantôme s'est endormi de fatigue zZZz")
 		
 # Fonction utilitaire pour réveiller le fantôme dès qu'on interagit
 func reveiller_fantome() -> void:
+	
+	timer_sommeil.start()
 	if est_endormi or est_en_train_de_somnoler:
 		est_endormi = false
 		est_en_train_de_somnoler = false
 		get_parent().immobilise = false  
 		print("[SOMMEIL] Le fantôme se réveille !")
-	timer_sommeil.start()
 	
 func retourner_horizontalement() -> void:
 	$AnimatedSprite2D.flip_h = true 
@@ -171,8 +171,9 @@ func gerer_clic_simple() -> void:
 	reveiller_fantome()
 	if get_parent().mode =="hide":
 		return
-	if get_parent().mode=="note":
+	if get_parent().mode=="note" || get_parent().mode=="todo"  :
 		notes.hide()
+		todo.hide()
 		get_parent().mode = "free"
 		get_parent().immobilise =false
 		return
@@ -191,15 +192,18 @@ func to_hide_mode() -> void:
 	$AnimatedSprite2D.play("hide")
 	print("fantome hide !")
 	
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	var window = get_window()
+	var ground_y = usable_rect.end.y - window.size.y + get_parent().fantome_gap_box - 20
 	
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.double_click:
+		print("DOBULE CLICK")
+		is_dragging = false
 		if get_parent().mode =="hide":
 			get_parent().mode = "free"
 			get_parent().immobilise = false
-			
-		if get_parent().mode=="free" or get_parent().mode=="note"  :
+			return
+		if (get_parent().mode=="free" or get_parent().mode=="note" or get_parent().mode=="todo" ) and   window.position.y - 200 < ground_y    :
 			print('clic simple sur le fantome !')
 			gerer_clic_simple()
 			
@@ -215,7 +219,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	
 	if event is InputEventMouseButton and  event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			if is_dragging:
-				
+				 
 				# faire tomber le fantome
 				var current_mouse_pos = DisplayServer.mouse_get_position()
 				var distance_parcourue = click_position_start.distance_to(current_mouse_pos)
@@ -225,7 +229,6 @@ func _unhandled_input(event: InputEvent) -> void:
 				
 				if distance_parcourue > 5 :
 					
-					 
 					if get_parent().mode =="hide" and window.position.y <= 0: 
 						$AnimatedSprite2D.play("hide-top-screen")
 					elif get_parent().mode =="hide" : 

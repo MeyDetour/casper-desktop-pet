@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://3dmpsfhab78g" path="res://scenes/fantome.gd" id="2_0ld40"]
 [ext_resource type="Texture2D" uid="uid://jwue1k6oxhmp" path="res://sprites/face-planning.png" id="4_y6deb"]
 [ext_resource type="Texture2D" uid="uid://bmfh7d7gekt1o" path="res://sprites/hide-1.png" id="5_jscy8"]
+[ext_resource type="Texture2D" uid="uid://c7ao7q2yaqnc4" path="res://sprites/sleeping-1.png" id="6_5q0nq"]
 [ext_resource type="Texture2D" uid="uid://ce5tnuarefbug" path="res://sprites/hide-2.png" id="6_pm3ni"]
 [ext_resource type="Texture2D" uid="uid://bblj3p5o4uiqh" path="res://sprites/hide-3.png" id="8_2wyq8"]
 [ext_resource type="Texture2D" uid="uid://c6nh8hhpq8fsc" path="res://sprites/walk-1.png" id="8_og1vs"]
@@ -13,12 +14,14 @@
 [ext_resource type="Texture2D" uid="uid://ctmlhuh11pnvc" path="res://sprites/tired.png" id="10_fv21b"]
 [ext_resource type="Texture2D" uid="uid://dec558ilsjlyy" path="res://sprites/walk-3.png" id="10_vxglm"]
 [ext_resource type="Texture2D" uid="uid://dgttd2h5c8e3o" path="res://sprites/walk-4.png" id="11_2f3dj"]
-[ext_resource type="Texture2D" uid="uid://dts7hitki5uc0" path="res://sprites/sleeping.png" id="11_tel4y"]
+[ext_resource type="Texture2D" uid="uid://ctcommoejce3n" path="res://sprites/sleeping.png" id="11_tel4y"]
 [ext_resource type="Texture2D" uid="uid://ctkr5ts4v14b8" path="res://sprites/tired-fall.png" id="12_qkpxi"]
 [ext_resource type="Texture2D" uid="uid://ddf7rm62svikq" path="res://sprites/walk-5.png" id="12_yq6so"]
 [ext_resource type="Texture2D" uid="uid://bw8m2uchfaa1p" path="res://sprites/walk-6.png" id="13_fv21b"]
 [ext_resource type="Texture2D" uid="uid://bampyuy78owam" path="res://sprites/face.png" id="13_jbj1t"]
+[ext_resource type="Texture2D" uid="uid://bys682w5t5g1n" path="res://sprites/sleeping-2.png" id="14_dgi5k"]
 [ext_resource type="Texture2D" uid="uid://1r4qxvnhbqgs" path="res://sprites/walk-7.png" id="14_tel4y"]
+[ext_resource type="Texture2D" uid="uid://c4whivc22k7c7" path="res://sprites/sleeping-3.png" id="15_j8jky"]
 [ext_resource type="Texture2D" uid="uid://ba5o2t64w7knn" path="res://sprites/walk-8.png" id="15_qkpxi"]
 [ext_resource type="Texture2D" uid="uid://c4apm5md070o3" path="res://sprites/walk-9.png" id="16_5q0nq"]
 [ext_resource type="Texture2D" uid="uid://bcu8e048orflo" path="res://sprites/wall-1.png" id="17_dgi5k"]
@@ -30,9 +33,27 @@
 [ext_resource type="Texture2D" uid="uid://dkplvcccni5d5" path="res://sprites/face-hand-up-right.png" id="20_fuf3a"]
 [ext_resource type="Texture2D" uid="uid://t4a3l3f156u0" path="res://sprites/face-hand-up-left.png" id="21_pibwh"]
 [ext_resource type="Script" uid="uid://dhto4cl4x70vo" path="res://scenes/interface_notes.gd" id="27_vxglm"]
+[ext_resource type="Script" uid="uid://dbdh1puywhoi8" path="res://scenes/todo_list.gd" id="34_dgi5k"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tbgi4"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_fv21b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_qkpxi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_tel4y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_5q0nq")
+}],
+"loop": false,
+"name": &"fall-sleeping",
+"speed": 4.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("13_jbj1t")
@@ -101,17 +122,20 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("10_fv21b")
+"texture": ExtResource("6_5q0nq")
 }, {
 "duration": 1.0,
-"texture": ExtResource("12_qkpxi")
+"texture": ExtResource("14_dgi5k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_j8jky")
 }, {
 "duration": 1.0,
 "texture": ExtResource("11_tel4y")
 }],
-"loop": false,
+"loop": true,
 "name": &"sleeping",
-"speed": 4.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -210,8 +234,8 @@ script = ExtResource("2_0ld40")
 position = Vector2(210, 182)
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_tbgi4")
-animation = &"sommenole"
-autoplay = "walking right"
+animation = &"sleeping"
+frame_progress = 0.45421553
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=49739100]
 position = Vector2(217.25, 176)
@@ -250,6 +274,22 @@ text = "Cacher"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Todo" type="TextureButton" parent="ActionMenu/VBoxContainer" unique_id=554815672]
+layout_mode = 2
+texture_normal = ExtResource("17_muem4")
+texture_hover = ExtResource("18_dp3eg")
+
+[node name="Label" type="Label" parent="ActionMenu/VBoxContainer/Todo" unique_id=478668207]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Todo Liste"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Notes" type="TextureButton" parent="ActionMenu/VBoxContainer" unique_id=1931434267]
 layout_mode = 2
 texture_normal = ExtResource("17_muem4")
@@ -268,6 +308,7 @@ vertical_alignment = 1
 
 [node name="InterfaceNotes" type="Control" parent="." unique_id=1324556754]
 unique_name_in_owner = true
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_left = 22.999996
@@ -377,8 +418,118 @@ vertical_alignment = 1
 
 [node name="TimerSommeil" type="Timer" parent="." unique_id=1074347948]
 unique_name_in_owner = true
-wait_time = 4.0
+wait_time = 300.0
 one_shot = true
 autostart = true
+
+[node name="TodoList" type="Control" parent="." unique_id=866654367]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 22.999996
+offset_top = 58.999996
+offset_right = 62.999996
+offset_bottom = 99.0
+scale = Vector2(0.7, 0.7)
+script = ExtResource("34_dgi5k")
+
+[node name="ColorRect2" type="ColorRect" parent="TodoList" unique_id=241191825]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -32.85714
+offset_top = -84.285706
+offset_right = 222.85712
+offset_bottom = 104.285706
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TodoList" unique_id=958095896]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.142855
+offset_top = -68.57141
+offset_right = 205.85715
+offset_bottom = 81.42859
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="TodoList/VBoxContainer" unique_id=1423807706]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 2
+text = "Todo List
+"
+
+[node name="ListTodo" type="ItemList" parent="TodoList/VBoxContainer" unique_id=363473353]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(12.623979, 12.623979, 12.623979, 1)
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 23
+theme_override_constants/outline_size = 0
+theme_override_constants/line_separation = 2
+theme_override_constants/icon_margin = 4
+same_column_width = true
+
+[node name="TextEdit" type="TextEdit" parent="TodoList/VBoxContainer" unique_id=1858014778]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+wrap_mode = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TodoList/VBoxContainer" unique_id=1235447252]
+layout_mode = 2
+
+[node name="BoutonSauvegarder" type="TextureButton" parent="TodoList/VBoxContainer/HBoxContainer" unique_id=1295433067]
+layout_mode = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("17_muem4")
+
+[node name="Label" type="Label" parent="TodoList/VBoxContainer/HBoxContainer/BoutonSauvegarder" unique_id=249372549]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Sauvegarder"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoutonNouveau" type="TextureButton" parent="TodoList/VBoxContainer/HBoxContainer" unique_id=1951390924]
+layout_mode = 2
+texture_normal = ExtResource("17_muem4")
+
+[node name="Label" type="Label" parent="TodoList/VBoxContainer/HBoxContainer/BoutonNouveau" unique_id=497895841]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Nouveau"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoutonSupp" type="TextureButton" parent="TodoList/VBoxContainer/HBoxContainer" unique_id=1840990547]
+layout_mode = 2
+texture_normal = ExtResource("17_muem4")
+
+[node name="Label" type="Label" parent="TodoList/VBoxContainer/HBoxContainer/BoutonSupp" unique_id=1653336764]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Supprimer"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="input_event" from="Area2D" to="Area2D" method="_on_input_event"]
