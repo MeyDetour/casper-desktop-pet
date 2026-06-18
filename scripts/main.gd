@@ -25,7 +25,7 @@ func _ready() -> void:
 	notes.hide()
 	
 	var usable_rect = DisplayServer.screen_get_usable_rect()
-	var target_y = usable_rect.end.y - window.size.y + fantome_gap_box
+	var target_y = usable_rect.end.y - window.size.y + fantome_gap_box -20
 	window.position = Vector2i(0, target_y)
 	print("Fenêtre configurée. Position initiale au sol : ", window.position)
 	  

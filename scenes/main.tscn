@@ -104,13 +104,21 @@ animations = [{
 "texture": ExtResource("10_fv21b")
 }, {
 "duration": 1.0,
-"texture": ExtResource("11_tel4y")
+"texture": ExtResource("12_qkpxi")
 }, {
 "duration": 1.0,
-"texture": ExtResource("12_qkpxi")
+"texture": ExtResource("11_tel4y")
+}],
+"loop": false,
+"name": &"sleeping",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_fv21b")
 }],
 "loop": true,
-"name": &"sleeping",
+"name": &"sommenole",
 "speed": 5.0
 }, {
 "frames": [{
@@ -202,7 +210,7 @@ script = ExtResource("2_0ld40")
 position = Vector2(210, 182)
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_tbgi4")
-animation = &"sleeping"
+animation = &"sommenole"
 autoplay = "walking right"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=49739100]
@@ -369,7 +377,7 @@ vertical_alignment = 1
 
 [node name="TimerSommeil" type="Timer" parent="." unique_id=1074347948]
 unique_name_in_owner = true
-wait_time = 300.0
+wait_time = 4.0
 one_shot = true
 autostart = true
 

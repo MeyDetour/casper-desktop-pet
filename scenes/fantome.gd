@@ -8,7 +8,7 @@ var move_speed = 2
 var direction = Vector2(1,0)
 var is_dragging = false
 var drag_offset = Vector2i()
-   
+var est_en_train_de_somnoler = false
 var vertical_velocity = 0.0 
 
 var usable_rect = DisplayServer.screen_get_usable_rect()
@@ -20,14 +20,17 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	var window = get_window() 
 	var usable_rect = DisplayServer.screen_get_usable_rect()
-	var ground_y = usable_rect.end.y - window.size.y + get_parent().fantome_gap_box
+	var ground_y = usable_rect.end.y - window.size.y + get_parent().fantome_gap_box - 20
 	#print("mode :" +str(get_parent().mode))
 	#print("immbolie :" +str(get_parent().immobilise))
 	#print("dragging :" + str(is_dragging))
 	# CAS 1 : fantome dragger
 	if is_dragging:  
 		var global_mouse_pos = DisplayServer.mouse_get_position()
-		if get_parent().mode == "free" :
+		 
+		reveiller_fantome()
+		if get_parent().mode == "free" : 
+			get_parent().immobilise = false
 			window.position = global_mouse_pos - drag_offset
 			vertical_velocity = 0.0 
 			$AnimatedSprite2D.play("when dragging")
@@ -58,14 +61,12 @@ func _process(delta: float) -> void:
 				$AnimatedSprite2D.flip_v = false
 				flip_to_left()
 				get_window().position.y = y - get_parent().decalage_y_top_a_cause_du_menu - get_parent().decalage_hit_box
-						
-	elif get_parent().immobilise: 
+	elif est_endormi :
 		
-		#$AnimatedSprite2D.play("idle")
-		return
-	elif est_endormi:
-		get_parent().immobilise =  true
-		$AnimatedSprite2D.play("sleeping") # /!\ Crée une animation "sleeping" ou "idle" adaptée
+		var move_vector = Vector2i(direction * move_speed * 0.3)
+		window.position += move_vector
+							
+	elif est_endormi or get_parent().immobilise:
 		return
 	else:
 		if get_parent().mode =="free" : 
@@ -87,10 +88,13 @@ func _process(delta: float) -> void:
 					
 			# CAS 3 : fantome au sol        
 			else: 
-				if not is_waiting:
+				if not is_waiting :
 					var move_vector = Vector2i(direction * move_speed)
+					if est_en_train_de_somnoler : 
+						move_vector = Vector2i(direction * move_speed * 0.5)
 					window.position += move_vector
-					$AnimatedSprite2D.play("walking right")
+					if not est_en_train_de_somnoler :
+						$AnimatedSprite2D.play("walking right")
 				 
 				# Détection du mur DROIT
 				if window.position.x + window.size.x - get_parent().fantome_gap_box > usable_rect.end.x:
@@ -118,15 +122,26 @@ func _process(delta: float) -> void:
 	
 func _on_timer_sommeil_timeout() -> void:
 	if get_parent().mode == "free" and not is_dragging:
-		est_endormi = true
-		print("[SOMMEIL] Le fantôme s'est endormi de fatigue zZZz")
+			
+			$AnimatedSprite2D.play('sommenole')
+			est_en_train_de_somnoler = true
+			print("[SOMMEIL] Casper commence à somnoler...")
+			 
+			await get_tree().create_timer(8.0).timeout
+			 
+			est_en_train_de_somnoler = false
+			est_endormi = true
+			get_parent().immobilise = true 
+			$AnimatedSprite2D.play('sleeping')
+			print("[SOMMEIL] Le fantôme s'est endormi de fatigue zZZz")
 		
 # Fonction utilitaire pour réveiller le fantôme dès qu'on interagit
 func reveiller_fantome() -> void:
-	if est_endormi:
+	if est_endormi or est_en_train_de_somnoler:
 		est_endormi = false
+		est_en_train_de_somnoler = false
+		get_parent().immobilise = false  
 		print("[SOMMEIL] Le fantôme se réveille !")
-	# On relance le compte à rebours de 5 minutes depuis le début
 	timer_sommeil.start()
 	
 func retourner_horizontalement() -> void:
