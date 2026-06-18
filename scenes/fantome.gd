@@ -10,23 +10,27 @@ var direction = Vector2(1,0)
 var is_dragging = false
 var drag_offset = Vector2i()
 var est_en_train_de_somnoler = false
-var vertical_velocity = 0.0 
+var vertical_velocity = 0.0
 
 var usable_rect = DisplayServer.screen_get_usable_rect()
 var is_waiting = false
 var click_position_start = Vector2()
 var est_endormi = false
+
 func _ready() -> void:
 	timer_sommeil.timeout.connect(_on_timer_sommeil_timeout)
+	
 func _process(delta: float) -> void:
+	
 	var window = get_window() 
 	var usable_rect = DisplayServer.screen_get_usable_rect()
 	var ground_y = usable_rect.end.y - window.size.y + get_parent().fantome_gap_box - 20
+	
 	#print("mode :" +str(get_parent().mode))
 	#print("immbolie :" +str(get_parent().immobilise))
 	#print("dragging :" + str(is_dragging))
 	# CAS 1 : fantome dragger 
-	if is_dragging:  
+	if is_dragging :
 		var global_mouse_pos = DisplayServer.mouse_get_position()
 		 
 		reveiller_fantome()
@@ -35,7 +39,9 @@ func _process(delta: float) -> void:
 			window.position = global_mouse_pos - drag_offset
 			vertical_velocity = 0.0 
 			$AnimatedSprite2D.play("when dragging")
+			
 		elif get_parent().mode == "hide" : 
+			
 			var y = global_mouse_pos[1]  
 			var x = global_mouse_pos[0] 
 			 
@@ -46,27 +52,30 @@ func _process(delta: float) -> void:
 				$AnimatedSprite2D.play("hide-top-screen-mooving")
 				
 			# souris à gauche
-			elif   x < usable_rect.end.x /2    :
+			elif x < usable_rect.end.x / 2    :
 				setToLeft()  
 				rotation(0)
 				$AnimatedSprite2D.play('hide-mooving')
 				$AnimatedSprite2D.flip_v = false
 				flip_to_right()
 				get_window().position.y = y - get_parent().decalage_y_top_a_cause_du_menu - get_parent().decalage_hit_box
-			elif usable_rect.end.x /2  < x  :
+			elif usable_rect.end.x / 2  < x  :
 				setToRight() 
 				rotation(0) 
 				$AnimatedSprite2D.play('hide-mooving')
 				$AnimatedSprite2D.flip_v = false
 				flip_to_left()
 				get_window().position.y = y - get_parent().decalage_y_top_a_cause_du_menu - get_parent().decalage_hit_box
+	
 	elif est_endormi :
 		
 		var move_vector = Vector2i(direction * move_speed * 0.3)
 		window.position += move_vector
 							
 	elif est_endormi or get_parent().immobilise:
+		
 		return
+		
 	else:
 		if get_parent().mode =="free" : 
 		
@@ -118,23 +127,25 @@ func _process(delta: float) -> void:
 						$AnimatedSprite2D.flip_h = false
 						is_waiting = false
 						print("[MUR GAUCHE] Attente terminée. Fait demi-tour vers la DROITE.")
-	
+						
+						
 func _on_timer_sommeil_timeout() -> void:
+	
 	if get_parent().mode == "free" and not is_dragging:
 			
-			$AnimatedSprite2D.play('sommenole')
-			est_en_train_de_somnoler = true
-			print("[SOMMEIL] Casper commence à somnoler...")
-			 
-			await get_tree().create_timer(8.0).timeout
-			 
-			est_en_train_de_somnoler = false
-			est_endormi = true
-			get_parent().immobilise = true 
-			$AnimatedSprite2D.play('gall-sleeping')
-			print("[SOMMEIL] Le fantôme s'est endormi de fatigue zZZz")
+		$AnimatedSprite2D.play('sommenole')
+		est_en_train_de_somnoler = true
+		print("[SOMMEIL] Casper commence à somnoler...")
 		
-# Fonction utilitaire pour réveiller le fantôme dès qu'on interagit
+		await get_tree().create_timer(8).timeout
+		
+		est_en_train_de_somnoler = false
+		est_endormi = true
+		get_parent().immobilise = true
+		$AnimatedSprite2D.play('fall-sleeping')
+		print("[SOMMEIL] Le fantôme s'est endormi de fatigue zZZz")
+		
+			
 func reveiller_fantome() -> void:
 	
 	timer_sommeil.start()
@@ -146,31 +157,46 @@ func reveiller_fantome() -> void:
 	
 func retourner_horizontalement() -> void:
 	$AnimatedSprite2D.flip_h = true 
+	
 func flip_to_right() -> void:
 	$AnimatedSprite2D.flip_h = false 
+	
 func flip_to_left() -> void:
 	$AnimatedSprite2D.flip_h = true 
+	
 func setToLeft() -> void :
 	get_window().position.x = 0 - get_parent().fantome_gap_box
+	
 func setToRight() -> void :
 	get_window().position.x = usable_rect.end.x - get_window().size.x + get_parent().fantome_gap_box	
+
 func setToTopScreen() -> void : 
 	get_window().position.y = 0 - get_parent().decalage_y_top_a_cause_du_menu
+
 func setToBottomScreen() -> void : 
 	get_window().position.y = 0 - get_parent().fantome_gap_box
+
 func headAtBottom() -> void : 
 	return
+
 func est_a_gauche() -> bool:
 	return not  $AnimatedSprite2D.flip_h
+
 func est_a_droite() -> bool:
 	return  $AnimatedSprite2D.flip_h
+
 func rotation(angle:int)->void :
 		$AnimatedSprite2D.rotation_degrees = angle
+
 func gerer_clic_simple() -> void:
+	
 	print("click simple")
+	
 	reveiller_fantome()
+	
 	if get_parent().mode =="hide":
 		return
+		
 	if get_parent().mode=="note" || get_parent().mode=="todo"  :
 		notes.hide()
 		todo.hide()
@@ -185,6 +211,7 @@ func gerer_clic_simple() -> void:
 	else :
 		$AnimatedSprite2D.play("walking right")
 	print ("click simple executed")
+
 func change_dragging(choice:bool):
 	is_dragging = choice
 	
@@ -193,6 +220,7 @@ func to_hide_mode() -> void:
 	print("fantome hide !")
 	
 func _input(event: InputEvent) -> void:
+	
 	var window = get_window()
 	var ground_y = usable_rect.end.y - window.size.y + get_parent().fantome_gap_box - 20
 	

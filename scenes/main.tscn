@@ -234,8 +234,9 @@ script = ExtResource("2_0ld40")
 position = Vector2(210, 182)
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_tbgi4")
-animation = &"sleeping"
-frame_progress = 0.45421553
+animation = &"fall-sleeping"
+frame = 3
+frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=49739100]
 position = Vector2(217.25, 176)
@@ -286,7 +287,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Todo Liste"
+text = "Todo List"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -418,7 +419,7 @@ vertical_alignment = 1
 
 [node name="TimerSommeil" type="Timer" parent="." unique_id=1074347948]
 unique_name_in_owner = true
-wait_time = 300.0
+wait_time = 10.0
 one_shot = true
 autostart = true
 
