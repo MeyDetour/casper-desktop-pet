@@ -32,4 +32,9 @@ func _ready() -> void:
 	print("Fenêtre configurée. Position initiale au sol : ", window.position)
 	  
 	
-	
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed:
+		# On vérifie si la touche est X, ET que Ctrl est actif, ET que Alt est actif
+		if event.keycode == KEY_X and event.ctrl_pressed and event.alt_pressed:
+			print("Raccourci magique Ctrl+Alt+X détecté !")
+			get_tree().quit()

@@ -221,6 +221,14 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ya4ey"]
 size = Vector2(257.5, 192)
 
+[sub_resource type="InputEventKey" id="InputEventKey_dgi5k"]
+alt_pressed = true
+ctrl_pressed = true
+keycode = 88
+
+[sub_resource type="Shortcut" id="Shortcut_j8jky"]
+events = [SubResource("InputEventKey_dgi5k")]
+
 [node name="Node2D" type="Node2D" unique_id=1731414138]
 script = ExtResource("1_sugp2")
 
@@ -253,9 +261,9 @@ script = ExtResource("18_gqmmt")
 [node name="VBoxContainer" type="VBoxContainer" parent="ActionMenu" unique_id=589327582]
 layout_mode = 0
 offset_left = 273.0
-offset_top = 456.0
+offset_top = 402.0
 offset_right = 402.0
-offset_bottom = 543.0
+offset_bottom = 538.0
 mouse_filter = 2
 alignment = 1
 
@@ -304,6 +312,23 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Notes"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Quitter" type="TextureButton" parent="ActionMenu/VBoxContainer" unique_id=660252751]
+layout_mode = 2
+shortcut = SubResource("Shortcut_j8jky")
+texture_normal = ExtResource("17_muem4")
+texture_hover = ExtResource("18_dp3eg")
+
+[node name="Label" type="Label" parent="ActionMenu/VBoxContainer/Quitter" unique_id=472836341]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Quitter"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -425,6 +450,7 @@ autostart = true
 
 [node name="TodoList" type="Control" parent="." unique_id=866654367]
 unique_name_in_owner = true
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_left = 22.999996
