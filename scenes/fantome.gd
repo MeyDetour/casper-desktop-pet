@@ -8,13 +8,14 @@ extends Area2D
 var move_speed = 2
 var direction = Vector2(1,0)
 var is_dragging = false
-var drag_offset = Vector2i()
+var drag_offset : Vector2i = Vector2i() 
 var est_en_train_de_somnoler = false
 var vertical_velocity = 0.0
-
+var mouse_velocity = Vector2i() 
+var last_mouse_pos = Vector2i()  
 var usable_rect = DisplayServer.screen_get_usable_rect()
 var is_waiting = false
-var click_position_start = Vector2()
+var click_position_start = Vector2i()
 var est_endormi = false
 
 func _ready() -> void:
@@ -35,10 +36,16 @@ func _process(delta: float) -> void:
 		 
 		reveiller_fantome()
 		if get_parent().mode == "free" : 
-			get_parent().immobilise = false
-			window.position = global_mouse_pos - drag_offset
-			vertical_velocity = 0.0 
+			get_parent().immobilise = false  
 			$AnimatedSprite2D.play("when dragging")
+			window.position = global_mouse_pos - drag_offset
+			
+			# Calcul 100% Vector2i (Soustraction pure entre deux frames)
+			mouse_velocity = global_mouse_pos - last_mouse_pos
+			last_mouse_pos = global_mouse_pos
+			
+			vertical_velocity = 0.0
+	 
 			
 		elif get_parent().mode == "hide" : 
 			
@@ -81,7 +88,7 @@ func _process(delta: float) -> void:
 		
 			# CAS 2 : Fantome en l'air (Chute libre)
 			if window.position.y < ground_y  :
-				vertical_velocity += 0.2 * delta * 60 
+				vertical_velocity += 0.2 * delta * 20
 				
 				var fall_vector = Vector2i(direction.x * (move_speed * 0.5), vertical_velocity)
 				window.position += fall_vector
@@ -256,6 +263,19 @@ func _input(event: InputEvent) -> void:
 				is_dragging = false
 				
 				if distance_parcourue > 5 :
+					if get_parent().mode == "free": 
+						vertical_velocity = float(mouse_velocity.y) * 0.1
+						
+						if mouse_velocity.x != 0:
+							direction.x = sign(mouse_velocity.x) 
+							$AnimatedSprite2D.flip_h = (direction.x == -1)
+							
+							# On accompagne le lancer en poussant un peu la fenêtre horizontalement
+							window.position.x += mouse_velocity.x
+							
+						$AnimatedSprite2D.play("falling")
+						
+						
 					
 					if get_parent().mode =="hide" and window.position.y <= 0: 
 						$AnimatedSprite2D.play("hide-top-screen")

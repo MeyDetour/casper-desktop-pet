@@ -334,7 +334,6 @@ vertical_alignment = 1
 
 [node name="InterfaceNotes" type="Control" parent="." unique_id=1324556754]
 unique_name_in_owner = true
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_left = 22.999996
@@ -351,7 +350,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -32.85714
 offset_top = -84.285706
-offset_right = 222.85712
+offset_right = 221.42856
 offset_bottom = 104.285706
 grow_horizontal = 2
 grow_vertical = 2
